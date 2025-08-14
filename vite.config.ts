@@ -5,6 +5,10 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/kingbull-web/',
+  build: {
+    outDir: 'docs',
+  },
   server: {
     host: "::",
     port: 8080,
