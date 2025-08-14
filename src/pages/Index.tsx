@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import kingbullLogo from '@/assets/kingbull-logo.png';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,86 @@ const KingBullApp = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Logistics calculator state
+  const [quantity, setQuantity] = useState(100);
+  const [destination, setDestination] = useState('TP. Hồ Chí Minh');
+  const [productType, setProductType] = useState('Thức ăn cá tra');
+  const [logisticsResult, setLogisticsResult] = useState(null);
+
+  // Auto-calculate logistics when inputs change
+  useEffect(() => {
+    if (quantity > 0) {
+      calculateLogistics();
+    }
+  }, [quantity, destination, productType]);
+
+  const calculateLogistics = () => {
+    const baseRatePerTon = 250000; // VNĐ per ton base rate
+    const containersNeeded = Math.ceil(quantity / 25); // 25 tons per container
+    const distanceMultiplier = getDistanceMultiplier(destination);
+    const productMultiplier = getProductMultiplier(productType);
+    
+    const shippingCost = quantity * baseRatePerTon * distanceMultiplier * productMultiplier;
+    const deliveryTime = getDeliveryTime(destination);
+    const warehouse = getWarehouse(destination);
+    
+    setLogisticsResult({
+      containers: containersNeeded,
+      containerType: containersNeeded > 2 ? '40ft' : '20ft',
+      deliveryTime,
+      warehouse,
+      shippingCost: Math.round(shippingCost)
+    });
+  };
+
+  const getDistanceMultiplier = (dest) => {
+    const rates = {
+      'TP. Hồ Chí Minh': 1.2,
+      'Hà Nội': 1.8,
+      'Cần Thơ': 0.8,
+      'Đà Nẵng': 1.5,
+      'An Giang': 0.9,
+      'Sóc Trăng': 0.85,
+      'Kiên Giang': 1.1
+    };
+    return rates[dest] || 1.3;
+  };
+
+  const getProductMultiplier = (product) => {
+    const rates = {
+      'Thức ăn cá tra': 1.0,
+      'Thức ăn tôm': 1.15,
+      'Thức ăn cá basa': 0.95
+    };
+    return rates[product] || 1.0;
+  };
+
+  const getDeliveryTime = (dest) => {
+    const times = {
+      'TP. Hồ Chí Minh': '2-3 ngày',
+      'Hà Nội': '4-5 ngày',
+      'Cần Thơ': '1 ngày',
+      'Đà Nẵng': '3-4 ngày',
+      'An Giang': '1-2 ngày',
+      'Sóc Trăng': '1-2 ngày',
+      'Kiên Giang': '2-3 ngày'
+    };
+    return times[dest] || '3-4 ngày';
+  };
+
+  const getWarehouse = (dest) => {
+    const warehouses = {
+      'TP. Hồ Chí Minh': 'Kho TP.HCM',
+      'Hà Nội': 'Kho Hà Nội',
+      'Cần Thơ': 'Nhà máy Cần Thơ',
+      'Đà Nẵng': 'Kho Đà Nẵng',
+      'An Giang': 'Nhà máy Cần Thơ',
+      'Sóc Trăng': 'Nhà máy Cần Thơ',
+      'Kiên Giang': 'Kho Rạch Giá'
+    };
+    return warehouses[dest] || 'Nhà máy Cần Thơ';
+  };
 
   const navigation = [
     { id: 'home', label: 'Trang chủ', icon: Fish },
@@ -558,56 +639,100 @@ const KingBullApp = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="quantity">Số lượng (tấn)</Label>
-                    <Input id="quantity" placeholder="100" type="number" />
+                    <Input 
+                      id="quantity" 
+                      placeholder="100" 
+                      type="number" 
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="destination">Địa điểm giao hàng</Label>
-                    <Input id="destination" placeholder="TP. Hồ Chí Minh" />
+                    <select 
+                      id="destination" 
+                      className="w-full p-2 border rounded-md bg-background"
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                    >
+                      <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                      <option value="Hà Nội">Hà Nội</option>
+                      <option value="Cần Thơ">Cần Thơ</option>
+                      <option value="Đà Nẵng">Đà Nẵng</option>
+                      <option value="An Giang">An Giang</option>
+                      <option value="Sóc Trăng">Sóc Trăng</option>
+                      <option value="Kiên Giang">Kiên Giang</option>
+                    </select>
                   </div>
                 </div>
                 
                 <div>
                   <Label htmlFor="product-type">Loại sản phẩm</Label>
-                  <select className="w-full p-2 border rounded-md">
-                    <option>Thức ăn cá tra</option>
-                    <option>Thức ăn tôm</option>
-                    <option>Thức ăn cá basa</option>
+                  <select 
+                    id="product-type" 
+                    className="w-full p-2 border rounded-md bg-background"
+                    value={productType}
+                    onChange={(e) => setProductType(e.target.value)}
+                  >
+                    <option value="Thức ăn cá tra">Thức ăn cá tra</option>
+                    <option value="Thức ăn tôm">Thức ăn tôm</option>
+                    <option value="Thức ăn cá basa">Thức ăn cá basa</option>
                   </select>
                 </div>
 
-                <Button variant="hero" className="w-full">
-                  <Calculator className="w-4 h-4" />
-                  Tính Toán Chi Phí
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Sample Results */}
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-kingbull-green">Kết Quả Mô Phỏng</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span>Số container cần thiết:</span>
-                    <span className="font-semibold">4 container 20ft</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Thời gian giao hàng:</span>
-                    <span className="font-semibold text-kingbull-blue">2-3 ngày</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Kho xuất phát:</span>
-                    <span className="font-semibold">Cần Thơ</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Chi phí vận chuyển:</span>
-                    <span className="font-semibold text-kingbull-gold">25,000,000 VNĐ</span>
+                <div className="bg-muted p-4 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calculator className="w-4 h-4" />
+                    <span>Tính toán tự động khi thay đổi thông tin</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Dynamic Results */}
+            {logisticsResult && (
+              <Card className="max-w-2xl mx-auto">
+                <CardHeader>
+                  <CardTitle className="text-kingbull-green">Kết Quả Tính Toán</CardTitle>
+                  <CardDescription>
+                    Tự động cập nhật theo thông tin bạn nhập
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span>Số container cần thiết:</span>
+                      <span className="font-semibold">
+                        {logisticsResult.containers} container {logisticsResult.containerType}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Thời gian giao hàng:</span>
+                      <span className="font-semibold text-kingbull-blue">
+                        {logisticsResult.deliveryTime}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Kho xuất phát:</span>
+                      <span className="font-semibold">
+                        {logisticsResult.warehouse}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Chi phí vận chuyển:</span>
+                      <span className="font-semibold text-kingbull-gold">
+                        {logisticsResult.shippingCost.toLocaleString('vi-VN')} VNĐ
+                      </span>
+                    </div>
+                    <div className="bg-kingbull-blue/10 p-3 rounded-lg">
+                      <div className="text-sm text-muted-foreground">
+                        Chi phí đã bao gồm vận chuyển và bảo hiểm hàng hóa
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         );
 
@@ -842,8 +967,13 @@ const KingBullApp = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="text-2xl font-bold text-primary">
-              KINGBULL
+            <div className="flex items-center gap-3">
+              <img 
+                src={kingbullLogo} 
+                alt="KingBull Logo" 
+                className="h-8 w-auto"
+              />
+              <span className="text-2xl font-bold text-primary">KINGBULL</span>
             </div>
 
             {/* Desktop Navigation */}
