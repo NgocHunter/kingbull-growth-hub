@@ -32,7 +32,7 @@ import {
   Settings
 } from 'lucide-react';
 
-const KingBullApp = () => {
+const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
@@ -229,4 +229,4 @@ const KingBullApp = () => {
   );
 };
 
-export default KingBullApp;
+export default Index;
