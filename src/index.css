@@ -17,24 +17,45 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* KingBull Brand Colors */
+    --primary: 200 90% 50%;  /* Primary Blue #0EA4E8 */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 142 70% 45%;  /* Growth Green #2BCB53 */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
+    --accent: 46 100% 50%;  /* Profit Gold #FFBE00 */
+    --accent-foreground: 222.2 84% 4.9%;
+
+    --muted: 210 20% 97%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 200 90% 50%;
+
+    /* Custom KingBull Design Tokens */
+    --kingbull-blue: 200 90% 50%;
+    --kingbull-blue-dark: 200 90% 40%;
+    --kingbull-green: 142 70% 45%;
+    --kingbull-green-light: 142 60% 55%;
+    --kingbull-gold: 46 100% 50%;
+    --kingbull-gold-light: 46 100% 70%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--kingbull-blue)), hsl(var(--kingbull-green)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--kingbull-blue)), hsl(var(--kingbull-blue-dark)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--kingbull-gold)), hsl(var(--kingbull-gold-light)));
+    
+    /* Shadows */
+    --shadow-kingbull: 0 10px 30px -10px hsl(var(--kingbull-blue) / 0.3);
+    --shadow-success: 0 10px 30px -10px hsl(var(--kingbull-green) / 0.3);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 
